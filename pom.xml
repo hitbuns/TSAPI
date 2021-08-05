@@ -4,8 +4,9 @@
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>Monstro-Development</groupId>
-    <artifactId>PacketAnal</artifactId>
+    <artifactId>TSAPI</artifactId>
     <version>1</version>
+    <scope></scope>
 
 
 </project>
