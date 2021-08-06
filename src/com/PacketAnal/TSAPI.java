@@ -25,10 +25,10 @@ public class TSAPI extends JavaPlugin {
 
     public static void sendTitle(String title, String subTitle, int fadeInTicks, int stayInTicks, int fadeOutTicks, Player... players) {
         if (title == null && subTitle == null) return;
-        PacketPlayOutTitle titlePacket = new PacketPlayOutTitle(PacketPlayOutTitle.EnumTitleAction.TITLE,
-                new ChatComponentText(Utils.color(title)), fadeInTicks, stayInTicks, fadeOutTicks);
-        PacketPlayOutTitle subTitlePacket = new PacketPlayOutTitle(PacketPlayOutTitle.EnumTitleAction.SUBTITLE,
-                new ChatComponentText(Utils.color(subTitle)), fadeInTicks, stayInTicks, fadeOutTicks);
+        PacketPlayOutTitle titlePacket = new PacketPlayOutTitle(PacketPlayOutTitle.EnumTitleAction.TITLE, title != null?
+                new ChatComponentText(Utils.color(title)):null, fadeInTicks, stayInTicks, fadeOutTicks);
+        PacketPlayOutTitle subTitlePacket = new PacketPlayOutTitle(PacketPlayOutTitle.EnumTitleAction.SUBTITLE, subTitle != null?
+                new ChatComponentText(Utils.color(subTitle)):null, fadeInTicks, stayInTicks, fadeOutTicks);
         if (players == null || players.length == 0) {
             send(Bukkit.getOnlinePlayers(),titlePacket,subTitlePacket);
             return;
@@ -38,14 +38,16 @@ public class TSAPI extends JavaPlugin {
 
     public static void updateTabHeader(String header,String footer,Player... players) {
         PacketPlayOutPlayerListHeaderFooter packetPlayOutPlayerListHeaderFooter =
-                new PacketPlayOutPlayerListHeaderFooter(new ChatComponentText(Utils.color(header)));
-        try {
-            Field field = PacketPlayOutPlayerListHeaderFooter.class.getDeclaredField("b");
-            field.setAccessible(true);
-            field.set(packetPlayOutPlayerListHeaderFooter,new ChatComponentText(Utils.color(footer)));
-            field.setAccessible(false);
-        } catch (NoSuchFieldException | IllegalAccessException e) {
-            e.printStackTrace();
+                new PacketPlayOutPlayerListHeaderFooter((header !=null)?new ChatComponentText(Utils.color(header)):null);
+        if (footer != null) {
+            try {
+                Field field = PacketPlayOutPlayerListHeaderFooter.class.getDeclaredField("b");
+                field.setAccessible(true);
+                field.set(packetPlayOutPlayerListHeaderFooter, new ChatComponentText(Utils.color(footer)));
+                field.setAccessible(false);
+            } catch (NoSuchFieldException | IllegalAccessException e) {
+                e.printStackTrace();
+            }
         }
         if (players == null || players.length == 0) {
             send(Bukkit.getOnlinePlayers(),packetPlayOutPlayerListHeaderFooter);
